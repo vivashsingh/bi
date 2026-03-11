@@ -525,6 +525,36 @@ footer {
     transform: translateY(2px);
 }
 
+/* Pricing note */
+.pricing-note {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    margin-top: 25px;
+    font-style: italic;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 20px;
+}
+
+/* Disable hover effects on touch devices */
+@media (hover: none) {
+    .service-card:hover,
+    .portfolio-item:hover,
+    .process-step:hover,
+    .cta-button:hover,
+    nav a:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+    nav a:after {
+        display: none;
+    }
+    .social-icons a:hover {
+        background: rgba(255,255,255,0.1);
+        transform: none;
+    }
+}
+
 /* Mobile Styles - CLEAN & MINIMAL */
 @media (max-width: 768px) {
     .container {
@@ -663,14 +693,11 @@ footer {
         flex-direction: column;
     }
     
-    /* REMOVED: Mobile background motifs - Keeping it clean and minimal */
     .mobile-background {
         display: none;
     }
     
-    #background-canvas {
-        display: none;
-    }
+    /* Canvas remains visible on mobile (no display: none) */
     
     /* Improved spacing for mobile */
     .about-content p {
