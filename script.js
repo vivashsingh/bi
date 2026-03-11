@@ -29,32 +29,49 @@ let height = canvas.height = window.innerHeight;
 
 const mouse = { x: width/2, y: height/2, radius: 150 };
 
+// --- Global interactive flag (true only on desktop) ---
+let interactive = window.innerWidth > 768;
+
 // --- Particle class ---
 class Particle {
     constructor(x, y, motif) {
-        this.x = this.baseX = x;
-        this.y = this.baseY = y;
+        this.baseX = x;
+        this.baseY = y;
+        this.x = x;
+        this.y = y;
         this.motif = motif;
         this.size = 60;
-        this.density = Math.random()*20 + 5;
+        this.density = Math.random() * 20 + 5;
+        // For floating animation on mobile
+        this.phaseX = Math.random() * Math.PI * 2;
+        this.phaseY = Math.random() * Math.PI * 2;
+        this.speed = 0.002; // gentle speed
         this.img = new Image();
         this.img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(motif);
     }
     draw() { 
-        ctx.drawImage(this.img, this.x-this.size/2, this.y-this.size/2, this.size, this.size); 
+        ctx.drawImage(this.img, this.x - this.size/2, this.y - this.size/2, this.size, this.size); 
     }
     update() {
-        let dx = mouse.x - this.x;
-        let dy = mouse.y - this.y;
-        let dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < mouse.radius){
-            let force = (mouse.radius - dist)/mouse.radius;
-            let angle = Math.atan2(dy, dx);
-            this.x -= force * Math.cos(angle) * this.density;
-            this.y -= force * Math.sin(angle) * this.density;
+        if (interactive) {
+            // Desktop: repulsion from mouse
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist < mouse.radius){
+                let force = (mouse.radius - dist) / mouse.radius;
+                let angle = Math.atan2(dy, dx);
+                this.x -= force * Math.cos(angle) * this.density;
+                this.y -= force * Math.sin(angle) * this.density;
+            } else {
+                this.x += (this.baseX - this.x) * 0.1;
+                this.y += (this.baseY - this.y) * 0.1;
+            }
         } else {
-            this.x += (this.baseX - this.x)*0.1;
-            this.y += (this.baseY - this.y)*0.1;
+            // Mobile: gentle floating animation
+            let time = Date.now() * this.speed;
+            this.x = this.baseX + Math.sin(time + this.phaseX) * 3;
+            this.y = this.baseY + Math.cos(time + this.phaseY) * 3;
         }
         this.draw();
     }
@@ -64,70 +81,60 @@ class Particle {
 const particles = [];
 const spacing = 140;
 
-// Only create particles if not on mobile
-if (window.innerWidth > 768) {
-    for(let row=0; row<motifs.length; row++){
-        for(let y = spacing/2 + row*spacing; y<height; y+=spacing*motifs.length){
-            for(let x = spacing/2; x<width; x+=spacing){
-                particles.push(new Particle(x, y, motifs[row]));
-            }
+// Create particles for all screen sizes
+for(let row = 0; row < motifs.length; row++){
+    for(let y = spacing/2 + row * spacing; y < height; y += spacing * motifs.length){
+        for(let x = spacing/2; x < width; x += spacing){
+            particles.push(new Particle(x, y, motifs[row]));
         }
     }
 }
 
 // --- Animate ---
 function animate(){
-    ctx.clearRect(0,0,width,height);
-    particles.forEach(p=>p.update());
+    ctx.clearRect(0, 0, width, height);
+    particles.forEach(p => p.update());
     requestAnimationFrame(animate);
 }
 
-// Only animate if not on mobile
-if (window.innerWidth > 768) {
-    animate();
-}
+animate();
 
 // --- Mouse / Touch ---
-document.addEventListener('mousemove', e=>{ 
+document.addEventListener('mousemove', e => { 
     mouse.x = e.clientX;
     mouse.y = e.clientY;
 });
 
-document.addEventListener('touchmove', e=>{ 
+document.addEventListener('touchmove', e => { 
     e.preventDefault(); 
     mouse.x = e.touches[0].clientX;
     mouse.y = e.touches[0].clientY;
 });
 
 // --- Resize ---
-window.addEventListener('resize', ()=>{
+window.addEventListener('resize', () => {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
     
     particles.length = 0;
     
-    // Only create particles if not on mobile
-    if (window.innerWidth > 768) {
-        for(let row=0; row<motifs.length; row++){
-            for(let y = spacing/2 + row*spacing; y<height; y+=spacing*motifs.length){
-                for(let x = spacing/2; x<width; x+=spacing){
-                    particles.push(new Particle(x, y, motifs[row]));
-                }
+    // Recreate grid for new size
+    for(let row = 0; row < motifs.length; row++){
+        for(let y = spacing/2 + row * spacing; y < height; y += spacing * motifs.length){
+            for(let x = spacing/2; x < width; x += spacing){
+                particles.push(new Particle(x, y, motifs[row]));
             }
         }
-        animate();
-    } else {
-        // On mobile: hide canvas completely
-        canvas.style.display = 'none';
     }
+    
+    // Update interactive flag
+    interactive = window.innerWidth > 768;
+    
+    // Ensure canvas is visible (in case it was hidden by any previous code)
+    canvas.style.display = 'block';
 });
 
 // REMOVED: All mobile background motif setup functions
-
-// Initialize - hide canvas on mobile
-if (window.innerWidth <= 768) {
-    canvas.style.display = 'none';
-}
 
 // Smooth scrolling for navigation links
 document.querySelectorAll('nav a').forEach(anchor => {
@@ -150,7 +157,7 @@ document.querySelectorAll('nav a').forEach(anchor => {
 
 const mobileBtn = document.querySelector('.mobile-menu-btn');
 const navList = document.querySelector('nav ul');
-mobileBtn.addEventListener('click', ()=> navList.classList.toggle('active'));
+mobileBtn.addEventListener('click', () => navList.classList.toggle('active'));
 
 // Close mobile menu when clicking outside
 document.addEventListener('click', (e) => {
