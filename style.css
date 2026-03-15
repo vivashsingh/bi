@@ -7,7 +7,7 @@
 
 body {
     overflow-x: hidden;
-    background: linear-gradient(135deg, #09294a, #000f1a);
+    background: #0a2a4a;
     color: #fff;
     line-height: 1.6;
 }
@@ -713,7 +713,7 @@ footer {
     
     /* Clean background for mobile */
     body {
-        background: linear-gradient(135deg, #09294a, #000f1a);
+        background: #0a2a4a;
     }
 }
 
