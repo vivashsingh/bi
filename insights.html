@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insights – Bula Impact</title>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3616645892367242" crossorigin="anonymous"></script>
+    
+    <meta name="description" content="Read insights from Bula Impact on digital storytelling, branding, and design.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <canvas id="background-canvas"></canvas>
+    <div class="mobile-background" id="mobile-background"></div>
+    
+    <div class="content">
+        <div id="header-placeholder"></div>
+        
+        <main class="container">
+            <section class="section">
+                <h1 class="section-title">Insights</h1>
+                
+                <article class="insight-article" id="storytelling">
+                    <h3>Why Your Brand Needs a Digital Story, Not Just a Website</h3>
+                    <p>In the Pacific, stories are passed down through generations. They carry identity, values, and connection. Today, your website is the modern vessel for that story. A website that merely lists services is forgettable. One that guides visitors through a narrative – your origin, your purpose, your people – creates an emotional bond. At Bula Impact, we design digital experiences that feel like a conversation, not a brochure. We dig deep to find the story only you can tell, and we build every page around it.</p>
+                </article>
+                
+                <article class="insight-article" id="human">
+                    <h3>Designing for the Pacific and Beyond: A Balanced Approach</h3>
+                    <p>Being based in Fiji gives us a unique perspective. We understand the warmth of community, the importance of respect, and the power of place. But we also work with clients in New York, Sydney, and London. The key is balance: we bring our cultural values of listening and authenticity to every project, without imposing a visual style that doesn’t fit. Whether your brand needs to feel minimal, luxurious, or playful, we adapt. Our design philosophy is simple: the user should feel understood, not overwhelmed.</p>
+                </article>
+                
+                <article class="insight-article" id="brandstory">
+                    <h3>The Art of Listening: How We Uncover Your Brand's True Identity</h3>
+                    <p>You might think you know your brand. But often, the most powerful identity is hiding beneath the surface. Through interviews, workshops, and careful observation, we help you articulate what makes you different. It’s not about inventing a persona – it’s about discovering the one that’s already there. Once uncovered, we translate that into a visual language that feels inevitable. This process is the heart of what we do, and it’s why our clients often tell us, “You understand us better than we understand ourselves.”</p>
+                </article>
+            </section>
+        </main>
+        
+        <div id="footer-placeholder"></div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        let headerLoaded = false;
+        let footerLoaded = false;
+
+        function checkBothLoaded() {
+            if (headerLoaded && footerLoaded) {
+                document.querySelector('.content').classList.add('visible');
+            }
+        }
+
+        fetch('common/header.html')
+            .then(r => r.ok ? r.text() : Promise.reject())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                if (typeof initMobileMenu === 'function') initMobileMenu();
+                headerLoaded = true;
+                checkBothLoaded();
+            })
+            .catch(() => console.warn('Header load failed'));
+
+        fetch('common/footer.html')
+            .then(r => r.ok ? r.text() : Promise.reject())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+                footerLoaded = true;
+                checkBothLoaded();
+            })
+            .catch(() => console.warn('Footer load failed'));
+    </script>
+</body>
+</html>

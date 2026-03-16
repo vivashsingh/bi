@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bula Impact – Digital Agency from Fiji, for the World</title>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3616645892367242" crossorigin="anonymous"></script>
+    
+    <!-- SEO -->
+    <meta name="description" content="Bula Impact is a Fiji-based digital agency crafting modern websites, brand identities, and digital experiences for global clients. We blend Pacific warmth with world-class design.">
+    <meta name="keywords" content="web design Fiji, digital agency Fiji, branding, UI UX design, Fiji web development">
+    <meta name="author" content="Bula Impact">
+    <meta property="og:title" content="Bula Impact – Digital Experiences Rooted in Story">
+    <meta property="og:description" content="We help brands worldwide discover and express their identity through thoughtful design and technology.">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+    <!-- CSS & Fonts -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <canvas id="background-canvas"></canvas>
+    <div class="mobile-background" id="mobile-background"></div>
+    
+    <div class="content">
+        <!-- Header placeholder -->
+        <div id="header-placeholder"></div>
+        
+        <!-- MAIN CONTENT -->
+        <main class="container">
+            <!-- Hero -->
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>We Create Digital Impact from Fiji</h1>
+                    <p class="subtitle">Bula Impact is a creative digital agency that helps brands worldwide discover, refine, and express their identity through modern websites and digital experiences.</p>
+                    <p class="hero-support-text">BULA. We are a Pacific‑born, globally minded agency. Our name reflects our spirit – warmth, honesty, and a deep respect for story. We don’t impose a “Fijian look” on anyone. Instead, we listen to your story and translate it into a digital identity that feels true to you.</p>
+                    <a href="contact.html" class="cta-button">Start Your Journey</a>
+                </div>
+            </section>
+            
+            <!-- About teaser -->
+            <section class="section">
+                <div class="teaser-card">
+                    <h3>We Are Bula Impact</h3>
+                    <p>Founded in Suva, Fiji, we believe the Pacific deserves world‑class digital craftsmanship – and so do our clients everywhere. Our team blends local heart with global expertise, working with businesses from the islands to New York.</p>
+                    <a href="about.html" class="read-more">Read more about us →</a>
+                </div>
+            </section>
+            
+            <!-- Services teaser -->
+            <section class="section">
+                <h2 class="section-title">What We Do</h2>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <i class="fas fa-code"></i>
+                        <h3>Web Development</h3>
+                        <p>Fast, responsive, and built to tell your story.</p>
+                    </div>
+                    <div class="service-card">
+                        <i class="fas fa-paint-brush"></i>
+                        <h3>Brand Identity</h3>
+                        <p>Visual language that captures your essence.</p>
+                    </div>
+                    <div class="service-card">
+                        <i class="fas fa-mouse-pointer"></i>
+                        <h3>UI/UX Design</h3>
+                        <p>Intuitive interfaces that feel human.</p>
+                    </div>
+                </div>
+                <div style="text-align:center; margin-top:20px;">
+                    <a href="service.html" class="read-more">Explore all services →</a>
+                </div>
+            </section>
+            
+            <!-- Process teaser -->
+            <section class="section">
+                <div class="teaser-card">
+                    <h3>Our Process: Listening First</h3>
+                    <p>Every project begins with curiosity. We learn your story, your audience, and your goals. Then we design and build with care – no templates, no shortcuts.</p>
+                    <a href="process.html" class="read-more">See how we work →</a>
+                </div>
+            </section>
+            
+            <!-- Insights teaser -->
+            <section class="section">
+                <div class="teaser-card">
+                    <h3>Latest Insight: Storytelling in Design</h3>
+                    <p>In the Pacific, stories have always carried meaning. Today, websites are the new storytelling medium. Learn how we blend tradition with technology.</p>
+                    <a href="insights.html" class="read-more">Read the article →</a>
+                </div>
+            </section>
+            
+            <!-- Contact teaser -->
+            <section class="section">
+                <div class="teaser-card" style="text-align:center;">
+                    <h3>Let's Create Together</h3>
+                    <p>Ready to bring your brand’s story to life? We’d love to hear from you.</p>
+                    <a href="contact.html" class="cta-button" style="margin-top:20px; display:inline-block;">Get in Touch</a>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Footer placeholder -->
+        <div id="footer-placeholder"></div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        // Load header and footer
+        fetch('common/header.html')
+            .then(response => {
+                if (!response.ok) throw new Error('Header not found');
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                if (typeof initMobileMenu === 'function') initMobileMenu();
+            })
+            .catch(err => console.warn('Could not load header.'));
+
+        fetch('common/footer.html')
+            .then(response => {
+                if (!response.ok) throw new Error('Footer not found');
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            })
+            .catch(err => console.warn('Could not load footer.'));
+    </script>
+</body>
+</html>

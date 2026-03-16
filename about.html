@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us – Bula Impact</title>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3616645892367242" crossorigin="anonymous"></script>
+    
+    <meta name="description" content="Learn about Bula Impact, a Fijian-owned digital agency that partners with global brands to create authentic digital identities.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <canvas id="background-canvas"></canvas>
+    <div class="mobile-background" id="mobile-background"></div>
+    
+    <div class="content">
+        <div id="header-placeholder"></div>
+        
+        <main class="container">
+            <section class="section">
+                <h1 class="section-title">About Bula Impact</h1>
+                <div style="max-width:900px; margin:0 auto; color:rgba(255,255,255,0.9);">
+                    <p><strong>We are storytellers, designers, and technologists based in Suva, Fiji.</strong> Bula Impact was founded in 2020 with a simple belief: the Pacific deserves world‑class digital craftsmanship – and so do our clients everywhere. Our name, “Bula”, is a Fijian greeting that means life, health, and warmth. It reflects how we work: with genuine care, deep listening, and a commitment to bringing your brand’s story to life.</p>
+                    <p>But we don’t force a “Fijian look” on anyone. Every brand has its own identity, and our job is to uncover it. Whether you’re a local Fijian business or a global enterprise, we adapt our design approach to your unique culture, audience, and goals. Our Pacific roots give us a perspective that values authenticity, community, and connection – values that resonate worldwide.</p>
+                    <p><strong>Our mission:</strong> To help brands discover what makes them unique and express it through digital experiences that are beautiful, functional, and human.</p>
+                    <p><strong>Our team:</strong> 100% Fijian‑owned, with collaborators around the globe. We’re small, agile, and deeply passionate about our craft.</p>
+                    <p><strong>Location:</strong> Based in Suva, Fiji, we work with clients in the Pacific, New Zealand, Australia, North America, and beyond.</p>
+                </div>
+                <div class="stats">
+                    <div class="stat-item"><span class="stat-number">50+</span><span class="stat-text">Projects Completed</span></div>
+                    <div class="stat-item"><span class="stat-number">98%</span><span class="stat-text">Client Satisfaction</span></div>
+                    <div class="stat-item"><span class="stat-number">5+</span><span class="stat-text">Years Experience</span></div>
+                    <div class="stat-item"><span class="stat-number">100%</span><span class="stat-text">Fijian Owned</span></div>
+                </div>
+            </section>
+        </main>
+        
+        <div id="footer-placeholder"></div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        let headerLoaded = false;
+        let footerLoaded = false;
+
+        function checkBothLoaded() {
+            if (headerLoaded && footerLoaded) {
+                document.querySelector('.content').classList.add('visible');
+            }
+        }
+
+        fetch('common/header.html')
+            .then(r => r.ok ? r.text() : Promise.reject())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                if (typeof initMobileMenu === 'function') initMobileMenu();
+                headerLoaded = true;
+                checkBothLoaded();
+            })
+            .catch(() => console.warn('Header load failed'));
+
+        fetch('common/footer.html')
+            .then(r => r.ok ? r.text() : Promise.reject())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+                footerLoaded = true;
+                checkBothLoaded();
+            })
+            .catch(() => console.warn('Footer load failed'));
+    </script>
+</body>
+</html>

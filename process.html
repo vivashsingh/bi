@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Process – Bula Impact</title>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3616645892367242" crossorigin="anonymous"></script>
+    
+    <meta name="description" content="Discover the Bula Impact process – from discovery to launch and beyond.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <canvas id="background-canvas"></canvas>
+    <div class="mobile-background" id="mobile-background"></div>
+    
+    <div class="content">
+        <div id="header-placeholder"></div>
+        
+        <main class="container">
+            <section class="section">
+                <h1 class="section-title">Our Process</h1>
+                <div style="max-width:800px; margin:0 auto;">
+                    <div class="process-step" style="width:100%; margin-bottom:20px;">
+                        <div class="number">1</div>
+                        <h4>Discovery</h4>
+                        <p>We start by listening. We learn about your business, your audience, your competitors, and your vision. This phase includes stakeholder interviews and deep research.</p>
+                    </div>
+                    <div class="process-step" style="width:100%; margin-bottom:20px;">
+                        <div class="number">2</div>
+                        <h4>Strategy</h4>
+                        <p>We synthesize what we’ve learned into a clear creative and technical strategy. This becomes the roadmap for the project – what we’ll build, why, and how it will achieve your goals.</p>
+                    </div>
+                    <div class="process-step" style="width:100%; margin-bottom:20px;">
+                        <div class="number">3</div>
+                        <h4>Design</h4>
+                        <p>We craft wireframes, mockups, and prototypes. You’ll see your ideas take shape and have the opportunity to refine them until every detail feels right.</p>
+                    </div>
+                    <div class="process-step" style="width:100%; margin-bottom:20px;">
+                        <div class="number">4</div>
+                        <h4>Development</h4>
+                        <p>We bring the design to life with clean, efficient code. Throughout development, we test for performance, accessibility, and responsiveness on all devices.</p>
+                    </div>
+                    <div class="process-step" style="width:100%; margin-bottom:20px;">
+                        <div class="number">5</div>
+                        <h4>Launch & Grow</h4>
+                        <p>After launch, we remain your partner. We provide training, support, and continuous improvement – because your digital presence should evolve with your business.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <div id="footer-placeholder"></div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        let headerLoaded = false;
+        let footerLoaded = false;
+
+        function checkBothLoaded() {
+            if (headerLoaded && footerLoaded) {
+                document.querySelector('.content').classList.add('visible');
+            }
+        }
+
+        fetch('common/header.html')
+            .then(r => r.ok ? r.text() : Promise.reject())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                if (typeof initMobileMenu === 'function') initMobileMenu();
+                headerLoaded = true;
+                checkBothLoaded();
+            })
+            .catch(() => console.warn('Header load failed'));
+
+        fetch('common/footer.html')
+            .then(r => r.ok ? r.text() : Promise.reject())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+                footerLoaded = true;
+                checkBothLoaded();
+            })
+            .catch(() => console.warn('Footer load failed'));
+    </script>
+</body>
+</html>
