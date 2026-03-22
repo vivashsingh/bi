@@ -1,4 +1,4 @@
-// --- Fijian motifs (same as before) ---
+// --- Fijian motifs (white versions) ---
 const motifs = [
   `<svg viewBox="0 0 162.5 103.9" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="M2.98.86l34.82-.86,9.15,23,8.07-.2,12.13-19.99,10.15,22.47,7.57-.19,11.56-22.5,9.13,21.99,8.58-.21,10.58-21.47,36.33-.9.52,21.2-38.14,9.53,38.64,10.66.42,17.16-37.62,10.02,36.18,13.24.47,19.18-37.34.92-10.73-25.49-7.57.19-10.52,23.99-11.45-23.95-5.8.14-12.02,24.54-10.73-25.49-7.07.17-11.06,22.49-35.83.89-.47-19.18,39.08-12.58L.39,59.5l-.39-15.64,39.6-11.58L3.46,20.54,2.98.86ZM80.86,36.3l-24.66,13.74,23.13,16.6,25.37-15.27-23.85-15.06Z"/></svg>`,
   `<svg viewBox="0 0 25.96 105.65" xmlns="http://www.w3.org/2000/svg">
@@ -13,15 +13,116 @@ const motifs = [
     </svg>`
 ];
 
-// --- Mobile menu (unchanged) ---
+// --- Canvas setup ---
+const canvas = document.getElementById('background-canvas');
+const ctx = canvas.getContext('2d');
+
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
+
+const mouse = { x: width/2, y: height/2, radius: 150 };
+let interactive = window.innerWidth > 768;
+
+// --- Responsive spacing ---
+function getSpacing() {
+  return window.innerWidth <= 768 ? 130 : 180;
+}
+
+// --- Particle class ---
+class Particle {
+  constructor(x, y, motif) {
+    this.baseX = x;
+    this.baseY = y;
+    this.x = x;
+    this.y = y;
+    this.motif = motif;
+    this.size = window.innerWidth <= 768 ? 50 : 60;
+    this.density = Math.random() * 20 + 5;
+    this.phaseX = Math.random() * Math.PI * 2;
+    this.phaseY = Math.random() * Math.PI * 2;
+    this.speed = 0.002;
+    this.img = new Image();
+    this.img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(motif);
+  }
+  draw() {
+    ctx.drawImage(this.img, this.x - this.size/2, this.y - this.size/2, this.size, this.size);
+  }
+  update() {
+    if (interactive) {
+      let dx = mouse.x - this.x;
+      let dy = mouse.y - this.y;
+      let dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < mouse.radius) {
+        let force = (mouse.radius - dist) / mouse.radius;
+        let angle = Math.atan2(dy, dx);
+        this.x -= force * Math.cos(angle) * this.density;
+        this.y -= force * Math.sin(angle) * this.density;
+      } else {
+        this.x += (this.baseX - this.x) * 0.1;
+        this.y += (this.baseY - this.y) * 0.1;
+      }
+    } else {
+      let time = Date.now() * this.speed;
+      this.x = this.baseX + Math.sin(time + this.phaseX) * 3;
+      this.y = this.baseY + Math.cos(time + this.phaseY) * 3;
+    }
+    this.draw();
+  }
+}
+
+// --- Create grid with distinct horizontal bands (original style) ---
+const particles = [];
+
+function createGrid() {
+  particles.length = 0;
+  const spacing = getSpacing();
+  // Original nested loops: each row gets a specific motif, repeating every `motifs.length` rows.
+  for (let row = 0; row < motifs.length; row++) {
+    for (let y = spacing/2 + row * spacing; y < height + spacing; y += spacing * motifs.length) {
+      for (let x = spacing/2; x < width + spacing; x += spacing) {
+        particles.push(new Particle(x, y, motifs[row]));
+      }
+    }
+  }
+}
+
+createGrid();
+
+// --- Animation ---
+function animate() {
+  ctx.clearRect(0, 0, width, height);
+  particles.forEach(p => p.update());
+  requestAnimationFrame(animate);
+}
+animate();
+
+// --- Mouse / Touch ---
+document.addEventListener('mousemove', e => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+});
+
+document.addEventListener('touchmove', e => {
+  e.preventDefault();
+  mouse.x = e.touches[0].clientX;
+  mouse.y = e.touches[0].clientY;
+});
+
+// --- Resize handler ---
+window.addEventListener('resize', () => {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+  interactive = window.innerWidth > 768;
+  createGrid();
+});
+
+// --- Mobile menu and scroll reveal (unchanged) ---
 function initMobileMenu() {
   const mobileBtn = document.querySelector('.mobile-menu-btn');
   const navList = document.querySelector('nav ul');
   if (!mobileBtn || !navList) return;
-
   const newBtn = mobileBtn.cloneNode(true);
   mobileBtn.parentNode.replaceChild(newBtn, mobileBtn);
-
   newBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     navList.classList.toggle('active');
@@ -39,7 +140,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// --- Smooth scrolling for anchor links ---
 document.addEventListener('click', (e) => {
   const link = e.target.closest('nav a[href^="#"]');
   if (link) {
@@ -60,99 +160,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// --- Canvas setup (with mouse interaction and subtle movement) ---
-const canvas = document.getElementById('background-canvas');
-const ctx = canvas.getContext('2d');
-
-let width = canvas.width = window.innerWidth;
-let height = canvas.height = window.innerHeight;
-
-const mouse = { x: width / 2, y: height / 2, radius: 150 };
-let interactive = window.innerWidth > 768;
-
-class Particle {
-  constructor(x, y, motif) {
-    this.baseX = x;
-    this.baseY = y;
-    this.x = x;
-    this.y = y;
-    this.motif = motif;
-    this.size = 40;
-    this.density = Math.random() * 20 + 5;
-    this.phaseX = Math.random() * Math.PI * 2;
-    this.phaseY = Math.random() * Math.PI * 2;
-    this.speed = 0.002;
-    this.img = new Image();
-    this.img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(motif);
-  }
-  draw() {
-    ctx.drawImage(this.img, this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
-  }
-  update() {
-    if (interactive) {
-      let dx = mouse.x - this.x;
-      let dy = mouse.y - this.y;
-      let dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < mouse.radius) {
-        let force = (mouse.radius - dist) / mouse.radius;
-        let angle = Math.atan2(dy, dx);
-        this.x -= force * Math.cos(angle) * this.density;
-        this.y -= force * Math.sin(angle) * this.density;
-      } else {
-        this.x += (this.baseX - this.x) * 0.1;
-        this.y += (this.baseY - this.y) * 0.1;
-      }
-    } else {
-      let time = Date.now() * this.speed;
-      this.x = this.baseX + Math.sin(time + this.phaseX) * 3;
-      this.y = this.baseY + Math.cos(time + this.phaseY) * 3;
-    }
-    this.draw();
-  }
-}
-
-const particles = [];
-const spacing = 180;
-
-function createGrid() {
-  particles.length = 0;
-  for (let row = 0; row < motifs.length; row++) {
-    for (let y = spacing / 2 + row * spacing; y < height; y += spacing * motifs.length) {
-      for (let x = spacing / 2; x < width; x += spacing) {
-        particles.push(new Particle(x, y, motifs[row]));
-      }
-    }
-  }
-}
-createGrid();
-
-function animate() {
-  ctx.clearRect(0, 0, width, height);
-  particles.forEach(p => p.update());
-  requestAnimationFrame(animate);
-}
-animate();
-
-document.addEventListener('mousemove', e => {
-  mouse.x = e.clientX;
-  mouse.y = e.clientY;
-});
-
-document.addEventListener('touchmove', e => {
-  e.preventDefault();
-  mouse.x = e.touches[0].clientX;
-  mouse.y = e.touches[0].clientY;
-});
-
-window.addEventListener('resize', () => {
-  width = canvas.width = window.innerWidth;
-  height = canvas.height = window.innerHeight;
-  createGrid();
-  interactive = window.innerWidth > 768;
-  canvas.style.display = 'block';
-});
-
-// --- Scroll reveal for sections (uses class .visible already in CSS) ---
 const sections = document.querySelectorAll('.section');
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -161,8 +168,6 @@ const observer = new IntersectionObserver((entries) => {
     }
   });
 }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
 sections.forEach(section => observer.observe(section));
 
-// --- Initialize mobile menu ---
 initMobileMenu();
